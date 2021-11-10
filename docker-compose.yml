@@ -1,0 +1,33 @@
+version: "3.7"
+services:
+  breaky-api: 
+    container_name: breaky
+    image: node:14-alpine
+    env_file:
+      - ./.env.local
+    working_fir: /app
+    ports:
+      - 8000:8000
+    volumes:
+      - "././app"
+    depends_on:
+      - breaky-mongodb
+    command: /bin/sh -c 'npm install && npm run local'
+    networks:
+      - breaky-api-rest
+  breaky-mongodb:
+    image: "mongo"
+    container_name: mongodb
+    env_file:
+      - ./compose/local/.mongodb
+    ports:
+      - 27018:27017
+    volumes:
+      - mongodb:/data/db
+    networks:
+      - breaky-api-rest
+volumes:
+  mongodb:
+networks:
+  breaky-api-rest:
+    driver: "bridge"
